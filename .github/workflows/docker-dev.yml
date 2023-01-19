@@ -8,7 +8,6 @@ on:
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
-    if: github.repository_owner == 'jointakahe'
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -30,9 +29,9 @@ jobs:
         id: meta
         uses: docker/metadata-action@57396166ad8aefe6098280995947635806a0e6ea
         with:
-          images: jointakahe/takahe-dev
+          images: cmoultrie/takahe-dev
           tags: |
-            type=edge,branch=main
+            type=edge,branch=${{ env.GITHUB_REF_NAME }}
             type=sha
 
       - name: Build and push Docker image
@@ -41,6 +40,6 @@ jobs:
           context: .
           file: docker/Dockerfile
           push: true
-          platforms: "linux/amd64,linux/arm64"
+          platforms: "linux/amd64"
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
